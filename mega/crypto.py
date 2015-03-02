@@ -1,9 +1,10 @@
 from Crypto.Cipher import AES
-import json
 import base64
-import struct
 import binascii
+import json
 import random
+import re
+import struct
 
 
 def aes_cbc_encrypt(data, key):
@@ -66,7 +67,8 @@ def encrypt_attr(attr, key):
 
 
 def decrypt_attr(attr, key):
-    attr = aes_cbc_decrypt(attr, a32_to_str(key)).rstrip('\0')
+    attr = aes_cbc_decrypt(attr, a32_to_str(key)).rstrip('\0\t t')
+    attr = re.sub("[^}]*$", "", attr)
     return json.loads(attr[4:]) if attr[:6] == 'MEGA{"' else False
 
 
